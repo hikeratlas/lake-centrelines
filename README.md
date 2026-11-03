@@ -2,6 +2,10 @@
 
 Lines through the middle of lakes, bays and straits in OpenStreetMap, for labelling them along their length the way printed maps do. A map style draws the name with `symbol-placement: line` along the centreline, instead of at a single point.
 
+![Adams Lake, BC, labelled three ways. At a point, the horizontal name runs mostly over land. Along the shoreline, it sits half on land, and MapLibre only draws it with its angle limit off. Along the centreline, it sits in the water and follows the lake's bend.](docs/comparison.png)
+
+*Adams Lake, British Columbia, drawn with MapLibre. The right panel uses this repo's output. Map data © OpenStreetMap contributors.*
+
 Input is an OSM PBF and output is GeoJSON lines: one LineString per named lake, in longitude/latitude. All of North America takes about 13 minutes on a 4-core machine (see [Speed](#speed)).
 
 [Hiker Atlas](https://www.hikeratlas.com/map) uses it for its basemap ([hikeratlas/basemap](https://github.com/hikeratlas/basemap)).
