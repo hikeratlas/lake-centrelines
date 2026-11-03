@@ -78,8 +78,8 @@ def longest_paths(graph, ends, n):
     the end node farthest from a (b); that's exact for a tree, and the
     skeleton is one except around islands. The other candidates are the
     next farthest end nodes from a and from b. This takes three
-    single-source searches, where label_centerlines searches from every end
-    node to every other.
+    single-source searches, where label_centerlines runs one search per pair
+    of end nodes.
     """
     a = farthest_ends(graph, ends[0], ends, 1)[0][1][0]
     from_a = farthest_ends(graph, a, ends, n)

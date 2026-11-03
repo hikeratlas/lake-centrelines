@@ -94,11 +94,11 @@ There are three differences from that pipeline:
 
 label_centerlines was far too slow to run on a large region. It ran for over 14 minutes on British Columbia without finishing. With the rewrite, all of British Columbia takes 4–7 s, and North America takes about 3 minutes once the water is extracted.
 
-**Where the time went:** profiling one lake, Trout Lake in BC (45 s), showed 90% of the time in shortest-path searches. To find the longest paths, label_centerlines runs networkx's `single_source_dijkstra` from every end node of the skeleton, and keeps the paths to every other end node. A skeleton has an end node at every little spur, so that was about 4,900 searches for Trout Lake, and far more for a big lake like Williston. The cost grows with the square of the number of spurs. It also built the graph in Python, testing each Voronoi edge against the lake one at a time.
+**Where the time went:** profiling one lake, Trout Lake in BC (45 s), showed 90% of the time in shortest-path searches. To find the longest paths, label_centerlines runs a separate networkx `single_source_dijkstra` search between every pair of the skeleton's end nodes. A skeleton has an end node at every little spur, so that was about 4,900 searches for Trout Lake, and far more for a big lake like Williston: the number of pairs grows with the square of the number of spurs. It also built the graph in Python, testing each Voronoi edge against the lake one at a time.
 
 **What changed:**
 
-- **Long paths from three searches instead of one per end node:** the longest path in a tree runs from the node farthest from any start (a) to the node farthest from a (b). The skeleton is a tree, except around islands. So this runs one search to find a, one from a, and one from b, and takes the candidate paths from the last two. It uses scipy's compiled `csgraph.dijkstra` on a sparse graph.
+- **Long paths from three searches instead of one per pair of end nodes:** the longest path in a tree runs from the node farthest from any start (a) to the node farthest from a (b). The skeleton is a tree, except around islands. So this runs one search to find a, one from a, and one from b, and takes the candidate paths from the last two. It uses scipy's compiled `csgraph.dijkstra` on a sparse graph.
 - **Vectorised geometry:** one `shapely.contains_xy` call over all Voronoi vertices against the prepared polygon, and `shapely.transform` with numpy for the projections, instead of per-edge and per-point Python.
 - **NumPy 2:** label_centerlines (2022) uses `np.math`, which NumPy 2 removed.
 - **Processes:** areas are processed in parallel, and streamed from input to output rather than loaded all at once.
